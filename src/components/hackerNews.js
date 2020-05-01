@@ -10,6 +10,9 @@ class HackerNews extends React.Component {
     this.renderNews = this.renderNews.bind(this);
     this.getRelativeTime = this.getRelativeTime.bind(this);
     this.getWebsite = this.getWebsite.bind(this);
+    this.getVotesCount = this.getVotesCount.bind(this);
+   this.state = {upvotes:{}}
+
   }
 
   componentDidMount() {
@@ -22,6 +25,24 @@ class HackerNews extends React.Component {
     } else {
       return "-";
     }
+  }
+  getVotesCount(id,votes){
+    let localvotes = JSON.parse(localStorage.getItem(id));
+    let total = votes;
+    if(localvotes){
+      total+=localvotes;
+    }
+    return total;
+  }
+  upVotePost(id,votesCount){
+    let votes = JSON.parse(localStorage.getItem(id));
+    if(votes)
+      votes++;
+    else
+      votes = 1;
+    localStorage.setItem(id,votes);
+    const upvotes = { ...this.state.upvotes, [id]: votesCount+votes }
+    this.setState({ upvotes });
   }
 
   getRelativeTime(timeStamp) {
@@ -42,18 +63,18 @@ class HackerNews extends React.Component {
   }
 
   renderNews(news, index) {
+    
     return (
       <tr key={news.objectID}>
         <td className="commentsCount">
           {news.num_comments >= 0 ? news.num_comments : "-"}
         </td>
-        <td className="upvoteCount">{news.points >= 0 ? news.points : "0"}</td>
+    <td className="upvoteCount">{(this.state.upvotes[news.objectID])?this.state.upvotes[news.objectID]:this.getVotesCount(news.objectID,news.points)}</td>
         <td className="upvoteCol">
-          <div className="upvote"></div>
+          <button className="upvote" onClick={() => this.upVotePost(news.objectID,news.points)}></button>
         </td>
         <td className="newsTitle" id="title">
           {news.title}
-          {/* <span> ({new URL(news.url).hostname}) by </span> */}
           <span> ({this.getWebsite(news.url)}) by </span>
           <span>{news.author}</span>
           <span> {this.getRelativeTime(news.created_at_i)} ago [ </span>
@@ -65,7 +86,6 @@ class HackerNews extends React.Component {
   }
 
   render() {
-    console.log("render:" + this);
     return (
       <div>
         <table>

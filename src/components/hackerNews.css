@@ -35,6 +35,8 @@ th {
   border: 0px;
   background: url(arrow.gif) no-repeat;
   margin: 0 auto;
+  outline:none;
+  cursor: pointer;
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2),
@@ -66,7 +68,6 @@ th {
 .newsTitle span {
   font-size: 10px;
 }
-
 .newsTitle span:nth-of-type(odd) {
   color: #828282;
 }
