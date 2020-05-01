@@ -1,0 +1,68 @@
+table {
+    width: 98%;
+    border-collapse: collapse;
+    background: rgb(246, 246, 239);
+    color:black;
+    margin: auto;
+    table-layout:fixed;
+}
+   
+td, th {
+    padding: 8px;
+    font-size:12px;
+   
+}
+/* Alternate Colors/Zebra stripes*/
+tr:nth-of-type(odd) {
+    background: #ececec;
+} 
+th {
+    background: #ff742b;
+    font-weight: bold;
+    color: #f3f3f3;
+    white-space: -o-pre-wrap; 
+    word-wrap: break-word;
+    white-space: pre-wrap; 
+    white-space: -moz-pre-wrap; 
+    white-space: -pre-wrap; 
+}
+.upvote {
+    /* display: flex;
+    align-items: center;
+    align-content: center; */
+    width: 10px;
+    height: 10px;
+    border: 0px;
+    background: url(arrow.gif) no-repeat;
+    margin: 0 auto;
+    
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), 
+    only screen and (min-device-pixel-ratio: 2) {
+    .upvote { background-size: 10px; background-image: url("arrow.gif"); }
+}
+.newsTitle,.newsTitleTh{
+    width: 70%;
+    text-align: left;
+}
+.commentsCount,.commentsCountTh{
+    width:10%;
+    text-align: center;
+}
+.upvoteCount,.upvoteCountTh{
+    width: 10%;
+    text-align: center;
+}
+.upvoteCol.upVoteColTh{
+    width: 10%;
+    text-align: center;
+}
+.newsTitle span{
+    font-size:10px;
+}
+
+.newsTitle span:nth-of-type(odd){
+    color:#828282;
+    
+}

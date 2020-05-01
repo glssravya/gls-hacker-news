@@ -1,14 +1,13 @@
 import React from 'react';
 import './App.css';
+import HackerNews from './components/hackerNews'
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          GLS-hacker-news App
-        </p>
+      <header className="header">
       </header>
+      <HackerNews />
     </div>
   );
 }
