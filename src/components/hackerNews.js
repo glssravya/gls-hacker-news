@@ -43,6 +43,7 @@ class HackerNews extends React.Component {
         }else{
             this.props.fetchHackerNews();
         }
+        this.getHiddenPosts();
       }
     }
     //this.getHiddenPosts();
@@ -128,13 +129,15 @@ class HackerNews extends React.Component {
     let chartData = new Map();
     if (data) {
       data.map(post => {
-        chartData.set(post.objectID, post.points);
-        let localUpvotes = JSON.parse(localStorage.getItem(post.objectID));
-        if (localUpvotes) {
-          chartData.set(
-            post.objectID,
-            chartData.get(post.objectID) + localUpvotes
-          );
+        if(this.state.hiddenPosts.indexOf(post.objectID)===-1){
+          chartData.set(post.objectID, post.points);
+          let localUpvotes = JSON.parse(localStorage.getItem(post.objectID));
+          if (localUpvotes) {
+            chartData.set(
+              post.objectID,
+              chartData.get(post.objectID) + localUpvotes
+            );
+          }
         }
       });
     }
