@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { fetchHackerNews } from "../actions/index";
 import "./hackerNews.css";
+import LineChart from './lineChart'
 
 class HackerNews extends React.Component {
   constructor(props) {
@@ -83,6 +84,20 @@ class HackerNews extends React.Component {
       return parseInt(seconds / 86400) + " days";
     }
   }
+  getLineChartData(data){
+    let chartData = {};
+    if(data){
+      data.map(post => {
+       // console.log(post);
+        chartData[post.objectID] = post.points; 
+        let localUpvotes = JSON.parse(localStorage.getItem(post.objectID));
+        if(localUpvotes){
+          chartData[post.objectID]+= localUpvotes;
+        }
+      })
+    }
+    return chartData;
+  }
 
   renderNews(news, index) {
     let showRow = this.showRows(news.objectID);
@@ -112,7 +127,7 @@ class HackerNews extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="container">
         <table>
           <thead>
             <tr>
@@ -128,6 +143,7 @@ class HackerNews extends React.Component {
               : ""}
           </tbody>
         </table>
+        <LineChart data={this.getLineChartData(this.props.hackerNews.hits)}/>
       </div>
     );
   }
