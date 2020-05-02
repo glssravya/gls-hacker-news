@@ -4,8 +4,9 @@ import HighchartsReact from 'highcharts-react-official'
 import { black } from 'color-name';
 class LineChart extends React.Component{
     render (){
-        console.log(this.props,'props from line chart');
         let chartData = this.props.data;
+        let votes = Array.from(chartData.values());
+        let ids = Array.from(chartData.keys());
         let options = {
             title: {
               text: ''
@@ -14,31 +15,30 @@ class LineChart extends React.Component{
                 enabled: false
             },
             xAxis: {
-                categories: Object.keys(chartData),
+                categories: ids,
                 label:'ID',
                 title:{
-                   // enabled:true,
                     text:'<strong>ID</strong>',
                     style:{
                         fontWeight:'bold',
-                        color:black
+                        color:black,
+                        fontSize:'18px'
                     }
                 }
             },
             yAxis:{
-                //lineColor: '#FF0000',
                 lineWidth:1,
                 title:{
-                    // enabled:true,
                      text:'<strong>Votes</strong>',
                      style:{
                          fontWeight:'bold',
-                         color:black
+                         color:black,
+                         fontSize:'18px'
                      }
                  }
             },
             series: [{
-                data: Object.values(chartData),
+                data: votes,
                 label:'fghjk',
                 showInLegend: false,  
             }],
@@ -53,7 +53,7 @@ class LineChart extends React.Component{
             },
     
           }
-        if(Object.keys(this.props.data).length>0){
+        if(ids.length>0){
         return (
             <div className="lineChart">
                 

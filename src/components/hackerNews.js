@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchHackerNews } from "../actions/index";
+import { fetchHackerNews, fetchNewsByPage } from "../actions/index";
 import "./hackerNews.css";
-import LineChart from './lineChart'
+import LineChart from "./lineChart";
+import Pagination from "./pagination";
 
 class HackerNews extends React.Component {
   constructor(props) {
@@ -13,19 +14,60 @@ class HackerNews extends React.Component {
     this.getWebsite = this.getWebsite.bind(this);
     this.getVotesCount = this.getVotesCount.bind(this);
     this.getHiddenPosts = this.getHiddenPosts.bind(this);
-    this.state = {upvotes:{},hiddenPosts:[]}
+    this.state = { upvotes: {}, hiddenPosts: [], id: "" };
   }
 
   componentDidMount() {
-    this.props.fetchHackerNews();
+    let id = "";
+    if (this.props.match) {
+      id = this.props.match.params.id;
+      this.setState({ id });
+    }
+
+    if (id) {
+      this.props.fetchNewsByPage(id);
+    } else {
+      this.props.fetchHackerNews();
+    }
     this.getHiddenPosts();
   }
-  getHiddenPosts(){
-    let hiddenPosts = JSON.parse(localStorage.getItem('hiddenPosts'));
-    if(!hiddenPosts){
+  componentDidUpdate(prevProps) {
+    let id = "";
+    console.log(this.props.match);
+    if (this.props.match.params) {
+      id = this.props.match.params.id;
+      if (this.state.id != id) {
+        this.setState({ id });
+        if (id) {
+          this.props.fetchNewsByPage(id);
+        }else{
+            this.props.fetchHackerNews();
+        }
+      }
+    }
+    //this.getHiddenPosts();
+
+    //   let id = ''
+    // if(this.props.match){
+    //    id = this.props.match.params.id;
+    //    this.setState({id});
+    // }
+
+    // if(id){
+    //   this.props.fetchNewsByPage(id);
+    // }else{
+    //   this.props.fetchHackerNews();
+    // }
+    // this.getHiddenPosts();
+
+    // }
+  }
+  getHiddenPosts() {
+    let hiddenPosts = JSON.parse(localStorage.getItem("hiddenPosts"));
+    if (!hiddenPosts) {
       hiddenPosts = [];
     }
-    this.setState({hiddenPosts}) 
+    this.setState({ hiddenPosts });
   }
   getWebsite(url) {
     if (url) {
@@ -34,37 +76,35 @@ class HackerNews extends React.Component {
       return "-";
     }
   }
-  getVotesCount(id,votes){
+  getVotesCount(id, votes) {
     let localvotes = JSON.parse(localStorage.getItem(id));
     let total = votes;
-    if(localvotes){
-      total+=localvotes;
+    if (localvotes) {
+      total += localvotes;
     }
     return total;
   }
-  upVotePost(id,votesCount){
+  upVotePost(id, votesCount) {
     let votes = JSON.parse(localStorage.getItem(id));
-    if(votes)
-      votes++;
-    else
-      votes = 1;
-    localStorage.setItem(id,votes);
-    const upvotes = { ...this.state.upvotes, [id]: votesCount+votes }
+    if (votes) votes++;
+    else votes = 1;
+    localStorage.setItem(id, votes);
+    const upvotes = { ...this.state.upvotes, [id]: votesCount + votes };
     this.setState({ upvotes });
   }
-  hidePost(id){
-      let hiddenPosts = JSON.parse(localStorage.getItem('hiddenPosts'));
-      if(!hiddenPosts){
-        hiddenPosts = [];
-      }
-      hiddenPosts.push(id);
-      localStorage.setItem('hiddenPosts',JSON.stringify(hiddenPosts));
-      this.setState({hiddenPosts}) 
+  hidePost(id) {
+    let hiddenPosts = JSON.parse(localStorage.getItem("hiddenPosts"));
+    if (!hiddenPosts) {
+      hiddenPosts = [];
+    }
+    hiddenPosts.push(id);
+    localStorage.setItem("hiddenPosts", JSON.stringify(hiddenPosts));
+    this.setState({ hiddenPosts });
   }
-  showRows(id){
-    if(this.state.hiddenPosts.indexOf(id)===-1){
+  showRows(id) {
+    if (this.state.hiddenPosts.indexOf(id) === -1) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
@@ -84,43 +124,58 @@ class HackerNews extends React.Component {
       return parseInt(seconds / 86400) + " days";
     }
   }
-  getLineChartData(data){
-    let chartData = {};
-    if(data){
+  getLineChartData(data) {
+    let chartData = new Map();
+    if (data) {
       data.map(post => {
-       // console.log(post);
-        chartData[post.objectID] = post.points; 
+        chartData.set(post.objectID, post.points);
         let localUpvotes = JSON.parse(localStorage.getItem(post.objectID));
-        if(localUpvotes){
-          chartData[post.objectID]+= localUpvotes;
+        if (localUpvotes) {
+          chartData.set(
+            post.objectID,
+            chartData.get(post.objectID) + localUpvotes
+          );
         }
-      })
+      });
     }
     return chartData;
   }
 
   renderNews(news, index) {
     let showRow = this.showRows(news.objectID);
-    if(showRow){
+    if (showRow) {
       return (
         <tr key={news.objectID}>
           <td className="commentsCount">
             {news.num_comments >= 0 ? news.num_comments : "-"}
           </td>
-      <td className="upvoteCount">{(this.state.upvotes[news.objectID])?this.state.upvotes[news.objectID]:this.getVotesCount(news.objectID,news.points)}</td>
+          <td className="upvoteCount">
+            {this.state.upvotes[news.objectID]
+              ? this.state.upvotes[news.objectID]
+              : this.getVotesCount(news.objectID, news.points)}
+          </td>
           <td className="upvoteCol">
-            <button className="upvote" onClick={() => this.upVotePost(news.objectID,news.points)}></button>
+            <button
+              className="upvote"
+              onClick={() => this.upVotePost(news.objectID, news.points)}
+            ></button>
           </td>
           <td className="newsTitle" id="title">
             {news.title}
             <span> ({this.getWebsite(news.url)}) by </span>
             <span>{news.author}</span>
             <span> {this.getRelativeTime(news.created_at_i)} ago [ </span>
-            <span><button className="hide" onClick={() => this.hidePost(news.objectID)}>hide</button></span>
+            <span>
+              <button
+                className="hide"
+                onClick={() => this.hidePost(news.objectID)}
+              >
+                hide
+              </button>
+            </span>
             <span> ]</span>
           </td>
         </tr>
-            
       );
     }
   }
@@ -143,7 +198,8 @@ class HackerNews extends React.Component {
               : ""}
           </tbody>
         </table>
-        <LineChart data={this.getLineChartData(this.props.hackerNews.hits)}/>
+        <Pagination id={this.state.id} />
+        <LineChart data={this.getLineChartData(this.props.hackerNews.hits)} />
       </div>
     );
   }
@@ -154,7 +210,7 @@ function mapStateToProps({ hackerNews }) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchHackerNews }, dispatch);
+  return bindActionCreators({ fetchHackerNews, fetchNewsByPage }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HackerNews);
