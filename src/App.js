@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import HackerNews from './components/hackerNews'
+import HackerNews from './components/hackerNews/hackerNews'
 
 
 function App() {

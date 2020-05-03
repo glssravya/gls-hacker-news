@@ -5,14 +5,16 @@ import { createStore, applyMiddleware } from 'redux';
 import ReduxPromise from 'redux-promise';
 import {BrowserRouter, Route,Switch} from 'react-router-dom';
 import './index.css';
-import reducers from './reducers';
-import HackerNews from './components/hackerNews';
+import reducers from './reducers/index';
+import HackerNews from './components/hackerNews/hackerNews';
 //import * as serviceWorker from './serviceWorker';
 
 const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
-
+console.log(reducers,'adfasd');
+const store = createStoreWithMiddleware(reducers);
 ReactDOM.render(
-  <Provider store={createStoreWithMiddleware(reducers)}>
+  
+  <Provider store={store}>
   <BrowserRouter>
     <div>
       <Switch>

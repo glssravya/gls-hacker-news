@@ -1,10 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchHackerNews, fetchNewsByPage } from "../actions/index";
+import { fetchHackerNews, fetchNewsByPage } from "../../actions/index";
 import "./hackerNews.css";
-import LineChart from "./lineChart";
-import Pagination from "./pagination";
+import LineChart from "../lineChart/lineChart";
+import Pagination from "../pagination/pagination";
 
 class HackerNews extends React.Component {
   constructor(props) {
@@ -33,10 +33,9 @@ class HackerNews extends React.Component {
   }
   componentDidUpdate(prevProps) {
     let id = "";
-    console.log(this.props.match);
     if (this.props.match.params) {
       id = this.props.match.params.id;
-      if (this.state.id != id) {
+      if (this.state.id !== id) {
         this.setState({ id });
         if (id) {
           this.props.fetchNewsByPage(id);
@@ -46,22 +45,6 @@ class HackerNews extends React.Component {
         this.getHiddenPosts();
       }
     }
-    //this.getHiddenPosts();
-
-    //   let id = ''
-    // if(this.props.match){
-    //    id = this.props.match.params.id;
-    //    this.setState({id});
-    // }
-
-    // if(id){
-    //   this.props.fetchNewsByPage(id);
-    // }else{
-    //   this.props.fetchHackerNews();
-    // }
-    // this.getHiddenPosts();
-
-    // }
   }
   getHiddenPosts() {
     let hiddenPosts = JSON.parse(localStorage.getItem("hiddenPosts"));
@@ -133,12 +116,14 @@ class HackerNews extends React.Component {
           chartData.set(post.objectID, post.points);
           let localUpvotes = JSON.parse(localStorage.getItem(post.objectID));
           if (localUpvotes) {
-            chartData.set(
+             chartData.set(
               post.objectID,
               chartData.get(post.objectID) + localUpvotes
             );
           }
+          
         }
+        return chartData
       });
     }
     return chartData;
@@ -167,7 +152,7 @@ class HackerNews extends React.Component {
             {news.title}
             <span> ({this.getWebsite(news.url)}) by </span>
             <span>{news.author}</span>
-            <span> {this.getRelativeTime(news.created_at_i)} ago [ </span>
+            <span> {this.getRelativeTime(news.created_at_i)} ago [</span>
             <span>
               <button
                 className="hide"
@@ -176,7 +161,7 @@ class HackerNews extends React.Component {
                 hide
               </button>
             </span>
-            <span> ]</span>
+            <span>]</span>
           </td>
         </tr>
       );
@@ -186,7 +171,7 @@ class HackerNews extends React.Component {
   render() {
     return (
       <div className="container">
-        <table>
+        <table className="newstable">
           <thead>
             <tr>
               <th className="commentsCountTh">Comments</th>
@@ -198,11 +183,13 @@ class HackerNews extends React.Component {
           <tbody>
             {this.props.hackerNews.hits
               ? this.props.hackerNews.hits.map(this.renderNews)
-              : ""}
+              : <tr><td colSpan="4" align="center">Loading Data..!</td></tr>}
           </tbody>
         </table>
         <Pagination id={this.state.id} />
-        <LineChart data={this.getLineChartData(this.props.hackerNews.hits)} />
+        {this.props.hackerNews.hits ?
+        <LineChart data={this.getLineChartData(this.props.hackerNews.hits)}  />
+        :<div></div>}
       </div>
     );
   }

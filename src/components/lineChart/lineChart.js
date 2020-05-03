@@ -63,6 +63,9 @@ class LineChart extends React.Component{
                 />
             </div>
         );
+        }else if(ids.length===0){
+
+            return <div className="lineChart noRecords">All Records are hidden in this page.Plese use Next/Previous to Navigate</div>
         }else{
             return <div></div>
         }
