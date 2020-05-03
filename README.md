@@ -18,12 +18,12 @@ Launches the test runner in the interactive watch mode.<br />
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### Technology Stack Details
-HTML.
-CSS.
-JavaScript.
-ES6.
-React,Redux
-Axios for fetching data
-Redux  promise as middleware.
-Testing: React testing library
+HTML.<br />
+CSS.<br />
+JavaScript.<br />
+ES6.<br />
+React,Redux<br />
+Axios for fetching data from api<br />
+Redux  promise as middleware.<br />
+Testing: React testing library.<br />
 
