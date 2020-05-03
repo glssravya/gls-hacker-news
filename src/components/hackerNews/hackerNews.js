@@ -144,17 +144,19 @@ class HackerNews extends React.Component {
           </td>
           <td className="upvoteCol">
             <button
+              aria-label="upvote"
               className="upvote"
               onClick={() => this.upVotePost(news.objectID, news.points)}
             ></button>
           </td>
-          <td className="newsTitle" id="title">
+          <td className="newsTitle">
             {news.title}
             <span> ({this.getWebsite(news.url)}) by </span>
             <span>{news.author}</span>
             <span> {this.getRelativeTime(news.created_at_i)} ago [</span>
             <span>
               <button
+                aria-label="hide"
                 className="hide"
                 onClick={() => this.hidePost(news.objectID)}
               >

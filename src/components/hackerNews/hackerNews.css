@@ -1,10 +1,7 @@
 .newstable {
-  /* width: 100%;  */
   border-collapse: collapse;
   color: black;
-  margin: 0; 
   table-layout: fixed;
-  /* width:auto; */
 }
 .container{
   width:98%;
@@ -14,7 +11,7 @@
 
 td,
 th {
-  padding: 8px 0;
+  padding: 8px;
   font-size: 12px;
 }
 /* Alternate Colors/Zebra stripes*/
@@ -25,7 +22,6 @@ th {
   background: #ff742b;
   font-weight: bold;
   color: #f3f3f3;
-  padding: 5px;
   white-space: -o-pre-wrap;
   word-wrap: break-word;
   white-space: pre-wrap;
